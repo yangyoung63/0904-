@@ -1,6 +1,79 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <title>My</title>
+    
 <H1>사물인터넷개론</H1>
 
+ <H3>나의 웹(2567019, 양민영)</H3>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+        const brokerUrl = 'wss://damoa.io:9002';
+    
+        // 고유한 클라이언트 ID 생성 (다른 사용자와 충돌 방지)
+        const clientId = 'iot-client-' + Math.random().toString(16).substr(2, 8);
+        
+        // 별도 인증이 필요 없으므로 options 객체는 간단하게 clientId만 포함
+        const options = {
+          clientId: clientId,
+        };
+    
+        console.log(`MQTT 브로커(${brokerUrl})에 접속을 시도합니다...`);
+        const client = mqtt.connect(brokerUrl, options);
+    
+        // 1. 브로커 접속 성공 시 실행되는 이벤트
+        client.on('connect', () => {
+            console.log(`✅ 접속 성공! (클라이언트 ID: ${clientId})`);
+    
+            // 2. 접속 성공 후 토픽 구독
+            const topic = `ewha/0317137263`; // 다른 사용자와 겹치지 않도록 고유한 토픽 사용, 본인학번으로 수정
+            client.subscribe(topic, (err) => {
+                if (!err) {
+                    console.log(`📄 토픽 구독 성공: ${topic}`);
+    
+                    // 3. 구독 성공 후 해당 토픽으로 메시지 발행
+                    //const message = 'Hello, MQTT from browser!';
+                    //console.log(`🚀 메시지 발행: "${message}"`);
+                    //client.publish(topic, message);
+                    client.publish('ewha/checkin', "본인학번 이름");
+                } else {
+                    console.error('토픽 구독 오류:', err);
+                }
+            });
+        });
+    
+        // 4. 구독한 토픽으로 메시지가 들어왔을 때 실행되는 이벤트
+        client.on('message', (topic, message) => {
+            console.log(`${topic} ${message.toString()}`);
+            // 1. id가 'main'인 div 요소를 찾습니다.
+            const mainDiv = document.getElementById('main');
+    
+            // 2. 새로 추가할 HTML 코드를 문자열로 만듭니다. (백틱 `` 사용)
+            const messageHTML = `
+                <div class="message-item">
+                    <span>${message.toString()}</span>
+                </div>
+            `;
+    
+            // 3. 새로운 HTML을 적용 합니다.
+            mainDiv.innerHTML = messageHTML;
+            
+            // 스크롤을 항상 아래로 이동시켜 최신 메시지를 보여줍니다.
+            mainDiv.scrollTop = mainDiv.scrollHeight;
+    
+            // 모든 작업 완료 후 접속 종료
+            //client.end();
+            //console.log('🔚 작업 완료 후 접속을 종료합니다.');
+        });
+        
+        // 접속 중 에러 발생 시
+        client.on('error', (err) => {
+            console.error('연결 오류:', err);
+            client.end();
+        });
+    </script>
+	
 <p> 2567019 양민영입니다.
 <br>저는 1일, 4일, 8일 수업을 듣지 못한 상태입니다.
 <br> 왜냐? 잘 듣던 강의가 추가 폐강 되었기 때문이죠 하하. </p>
@@ -96,3 +169,9 @@
   <li> 클래스 슬랙 들어가기 O</li>
   <li> 리더보드에 내 이름 들어가기O</li>
 </uL>
+</head>
+    
+<body>
+<div id="main"></div>
+</body>
+</html>
