@@ -25,7 +25,7 @@
             console.log(`✅ 접속 성공! (클라이언트 ID: ${clientId})`);
     
             // 2. 접속 성공 후 토픽 구독
-            const topic = `ewha/0317137263`; // 다른 사용자와 겹치지 않도록 고유한 토픽 사용, 본인학번으로 수정
+            const topic = `ewha/2567019`; // 다른 사용자와 겹치지 않도록 고유한 토픽 사용, 본인학번으로 수정
             client.subscribe(topic, (err) => {
                 if (!err) {
                     console.log(`📄 토픽 구독 성공: ${topic}`);
@@ -34,7 +34,7 @@
                     //const message = 'Hello, MQTT from browser!';
                     //console.log(`🚀 메시지 발행: "${message}"`);
                     //client.publish(topic, message);
-                    client.publish('ewha/checkin', "본인학번 이름");
+                    client.publish('ewha/2567019', "2567019 양민영");
                 } else {
                     console.error('토픽 구독 오류:', err);
                 }
